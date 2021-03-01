@@ -1956,7 +1956,7 @@ namespace ImGuizmo
       mat.v.position.Set(translation[0], translation[1], translation[2], 1.f);
    }
 
-   void Manipulate(const float *view, const float *projection, OPERATION operation, MODE mode, float *matrix, float *deltaMatrix, float *snap, float *localBounds, float *boundsSnap)
+   bool Manipulate(const float *view, const float *projection, OPERATION operation, MODE mode, float *matrix, float *deltaMatrix, float *snap, float *localBounds, float *boundsSnap)
    {
       ComputeContext(view, projection, matrix, mode);
 
@@ -1968,7 +1968,7 @@ namespace ImGuizmo
       vec_t camSpacePosition;
       camSpacePosition.TransformPoint(makeVect(0.f, 0.f, 0.f), gContext.mMVP);
       if (!gContext.mIsOrthographic && camSpacePosition.z < 0.001f)
-         return;
+         return gContext.mbUsing || gContext.mbUsingBounds;
 
       // --
       int type = NONE;
@@ -2013,6 +2013,8 @@ namespace ImGuizmo
               break;
           }
       }
+
+      return gContext.mbUsing || gContext.mbUsingBounds;
    }
 
    void DrawCube(const float *view, const float *projection, const float *matrix)
